@@ -6,6 +6,7 @@ use cosmic::iced::Limits;
 use cosmic::iced_winit::commands::popup::{destroy_popup, get_popup};
 use cosmic::widget::{self, settings};
 use cosmic::{Application, Element};
+use sysinfo::System;
 
 use crate::fl;
 
@@ -46,7 +47,7 @@ impl Application for YourApp {
 
     type Message = Message;
 
-    const APP_ID: &'static str = "com.example.CosmicAppletTemplate";
+    const APP_ID: &'static str = "com.example.MemoryUsage";
 
     fn core(&self) -> &Core {
         &self.core
@@ -85,19 +86,21 @@ impl Application for YourApp {
     fn view(&self) -> Element<Self::Message> {
         self.core
             .applet
-            .icon_button("display-symbolic")
+            .icon_button("utilities-system-monitor-symbolic")
             .on_press(Message::TogglePopup)
             .into()
     }
 
     fn view_window(&self, _id: Id) -> Element<Self::Message> {
+        let mut system = System::new_all();
+        system.refresh_all();
+        let total = system.total_memory() as f64 / 1024.00 / 1024.00 / 1024.00;
+        let used = system.used_memory() as f64 / 1024.00 / 1024.00 / 1024.00;
         let content_list = widget::list_column()
             .padding(5)
-            .spacing(0)
-            .add(settings::item(
-                fl!("example-row"),
-                widget::toggler(self.example_row).on_toggle(Message::ToggleExampleRow),
-            ));
+            .spacing(5)
+            .add(widget::text("Used / Total Gb"))
+            .add(widget::text(format!("{:.2} / {:.2} Gb", used, total)));
 
         self.core.applet.popup_container(content_list).into()
     }
