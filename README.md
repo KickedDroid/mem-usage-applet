@@ -1,3 +1,8 @@
+# Just memory usage
+
+![image](https://github.com/user-attachments/assets/197f87cf-f9aa-47e3-a093-ac2b2445f509)
+
+---
 # COSMIC Applet Template
 
 A template for COSMIC applets.
